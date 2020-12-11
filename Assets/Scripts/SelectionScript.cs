@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class SelectionScript : MonoBehaviour
 {
     Dictionary<int, string> listaProdavnica;
+    [SerializeField]
     public List<string> selektovaneProdavnice;
     public GameObject mapa;
     public GameObject Content;
@@ -83,7 +84,7 @@ public class SelectionScript : MonoBehaviour
                         selektovaneProdavnice.Add(toggle.name);
                     }
                     else{
-                        zaSelektovanje.GetComponent<Image>().color = new Color(243, 243, 243, 255);
+                        zaSelektovanje.GetComponent<Image>().color = new Color(243, 243, 243);
                         selektovaneProdavnice.Remove(toggle.name);
                     }
                 }
@@ -119,5 +120,12 @@ public class SelectionScript : MonoBehaviour
             else Content.transform.Find(brProdavnice).gameObject.GetComponent<Toggle>().isOn = !Content.transform.Find(brProdavnice).gameObject.GetComponent<Toggle>().isOn;            
         }
         else Debug.Log("Greska! Nije prosledjen broj prodavnice!");
+    }
+    public void ResetujSelekcije()
+    {
+        if(selektovaneProdavnice.Count > 0)
+            Content.transform.Find(selektovaneProdavnice[0]).GetComponent<Toggle>().isOn=false;
+        if (selektovaneProdavnice.Count > 0)
+            ResetujSelekcije();
     }
 }
