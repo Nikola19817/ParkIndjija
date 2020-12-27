@@ -25,6 +25,8 @@ public class SelectionScript : MonoBehaviour
     }
     void popuniSpisakProdavnica()
     {
+        //ucitavanje iz baze
+
         foreach (Transform t in Content.transform){ Destroy(t.gameObject); }
         for(int i = 0; i < listaProdavnica.Count; i++){
             GameObject temp = Instantiate(togglePrefab, Content.transform);
