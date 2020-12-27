@@ -12,15 +12,13 @@ public class MenadzerScena : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Alpha1))
             UcitajAplikaciju();
-        if (Input.GetKey(KeyCode.Alpha2))
-            UcitajAdminScenu();
     }
     public void UcitajAplikaciju()
     {
-        SceneManager.LoadScene(0);
-    }
-    public void UcitajAdminScenu()
-    {
-        SceneManager.LoadScene(1);
+        if(SceneManager.GetActiveScene().buildIndex == 0)
+            SceneManager.LoadScene(1);
+        else if (SceneManager.GetActiveScene().buildIndex == 1)
+            SceneManager.LoadScene(0);
+
     }
 }
