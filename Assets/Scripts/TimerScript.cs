@@ -5,7 +5,7 @@ public class TimerScript : MonoBehaviour
 {
     // Polja za timer interakcije
     float vremeOdPoslednjeInterakcije = 0f;
-    float duzinaInterakcije = 10f;
+    float duzinaInterakcije = 60f;
     bool timerInterakcijeAktivan = true;
 
     // Polja za timer reklama
@@ -14,9 +14,6 @@ public class TimerScript : MonoBehaviour
     float vremeOdPustanjaReklame = 0f;
     float duzinaTrajanjaReklame = 10f;
     bool timerReklameAktivan = false;
-
-    // Teksutalno polje za testiranje (Obrisati nakon testiranja)
-    public GameObject testPolje;
 
     // Polja za animacjie
     public Animator animator;
@@ -48,16 +45,13 @@ public class TimerScript : MonoBehaviour
                 ResetTimerInterakcije();
                 PustiReklame();
                 DeaktivirajTimerInterakcije();
-                testPolje.GetComponent<Text>().text = vremeOdPoslednjeInterakcije.ToString();
             }
             vremeOdPoslednjeInterakcije += Time.deltaTime;
-            testPolje.GetComponent<Text>().text = vremeOdPoslednjeInterakcije.ToString();
         }
         else if(timerReklameAktivan)
         {
             if(vremeOdPustanjaReklame >= duzinaTrajanjaReklame) SledecaReklama();
             vremeOdPustanjaReklame += Time.deltaTime;
-            testPolje.GetComponent<Text>().text = vremeOdPustanjaReklame.ToString();
         }
     }
     public void AktivirajTimerInterakcije()
