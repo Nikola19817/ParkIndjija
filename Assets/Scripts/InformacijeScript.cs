@@ -9,7 +9,7 @@ public class InformacijeScript : MonoBehaviour
     GameObject canvas;
     GameObject informacijePanel;
     GameObject prodavnicaPanel;
-    List<string> selektovaneProdavnice;
+    List<Lokal> selektovaneProdavnice;
     void Start()
     {
         canvas = this.transform.parent.gameObject;
@@ -26,9 +26,10 @@ public class InformacijeScript : MonoBehaviour
         {
             informacijePanel.SetActive(false);
             prodavnicaPanel.SetActive(true);
-            string imeObjekta = selektovaneProdavnice[selektovaneProdavnice.Count-1];
-            GameObject toggle = content.transform.Find(imeObjekta).gameObject;
-            this.transform.Find("Text").gameObject.GetComponent<TMP_Text>().text = toggle.transform.Find("Label").gameObject.GetComponent<Text>().text;
+            int imeObjekta = selektovaneProdavnice[selektovaneProdavnice.Count-1].lokalID;
+            GameObject toggle = content.transform.Find(imeObjekta.ToString()).gameObject;
+            this.transform.Find("Text").gameObject.GetComponent<TMP_Text>().text = selektovaneProdavnice[selektovaneProdavnice.Count - 1].lokalNaziv;
+            this.transform.Find("Prodavnica").Find("Opis").gameObject.GetComponent<TMP_Text>().text = selektovaneProdavnice[selektovaneProdavnice.Count - 1].lokalOpis;
         }
         else
         {

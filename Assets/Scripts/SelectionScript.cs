@@ -7,20 +7,18 @@ using UnityEngine.UI;
 
 public class SelectionScript : MonoBehaviour
 {
-    Dictionary<int, string> listaProdavnica;
     [SerializeField]
-    public List<string> selektovaneProdavnice;
+    public List<Lokal> selektovaneProdavnice;
     public GameObject mapa;
     public GameObject Content;
     public GameObject togglePrefab;
     
     void Start()
     {
-        listaProdavnica = new Dictionary<int, string>();
-        selektovaneProdavnice = new List<string>();
+        selektovaneProdavnice = new List<Lokal>();
         
-        for(int i = 0; i < 67; i++) { listaProdavnica.Add(i + 1, "Prodavnica " + (i + 1).ToString()); }
         foreach(Transform t in mapa.transform){ t.GetComponent<Button>().onClick.AddListener(delegate { SelectPrekoMape(t.name); }); }
+        DBconnection.GetData();
         popuniSpisakProdavnica();
     }
     void popuniSpisakProdavnica()
@@ -28,11 +26,11 @@ public class SelectionScript : MonoBehaviour
         //ucitavanje iz baze
 
         foreach (Transform t in Content.transform){ Destroy(t.gameObject); }
-        for(int i = 0; i < listaProdavnica.Count; i++){
+        for(int i = 0; i < DBconnection.lokali.Count; i++){
             GameObject temp = Instantiate(togglePrefab, Content.transform);
             temp.GetComponent<Toggle>().isOn = false;
-            temp.name = listaProdavnica.ElementAt(i).Key.ToString();
-            temp.transform.Find("Label").GetComponent<Text>().text = listaProdavnica.ElementAt(i).Value;
+            temp.name = DBconnection.lokali[i].lokalID.ToString();
+            temp.transform.Find("Naziv").GetComponent<Text>().text = DBconnection.lokali[i].lokalNaziv;
             temp.GetComponent<Toggle>().onValueChanged.AddListener(delegate { SelectPrekoSpiska(temp); });}
     }
     void SelectPrekoSpiska(GameObject toggle)
@@ -49,13 +47,14 @@ public class SelectionScript : MonoBehaviour
 
                 if (!tridesetJedan.GetComponent<Toggle>().isOn && !tridesetDva.GetComponent<Toggle>().isOn){
                     zaSelektovanje.GetComponent<Image>().color = new Color(243, 243, 243, 255);
-                    if (selektovaneProdavnice.Contains("31")) selektovaneProdavnice.Remove("31");
-                    if (selektovaneProdavnice.Contains("32")) selektovaneProdavnice.Remove("32");
+                    IEnumerable<Lokal> temp = DBconnection.lokali.Where(x => x.lokalID == 31 || x.lokalID == 32);
+                    foreach(Lokal l in temp) { selektovaneProdavnice.Remove(l); }
                 }
                 else{ 
                     zaSelektovanje.GetComponent<Image>().color = Color.red;
-                    if (selektovaneProdavnice.Contains(toggle.name)) selektovaneProdavnice.Remove(toggle.name);
-                    else selektovaneProdavnice.Add(toggle.name);
+                    Lokal temp = DBconnection.lokali.Where(x => x.lokalID == Convert.ToInt32(toggle.name)).FirstOrDefault();
+                    if (selektovaneProdavnice.Contains(temp)) selektovaneProdavnice.Remove(temp);
+                    else selektovaneProdavnice.Add(temp);
                 }
 
             }
@@ -67,14 +66,14 @@ public class SelectionScript : MonoBehaviour
 
                 if (!tridesetOsam.GetComponent<Toggle>().isOn && !tridesetDevet.GetComponent<Toggle>().isOn && !cetrdeset.GetComponent<Toggle>().isOn){
                     zaSelektovanje.GetComponent<Image>().color = new Color(243, 243, 243, 255);
-                    if (selektovaneProdavnice.Contains("38")) selektovaneProdavnice.Remove("38");
-                    if (selektovaneProdavnice.Contains("39")) selektovaneProdavnice.Remove("39");
-                    if (selektovaneProdavnice.Contains("40")) selektovaneProdavnice.Remove("40");
+                    IEnumerable<Lokal> temp = DBconnection.lokali.Where(x => x.lokalID == 38 || x.lokalID == 39 || x.lokalID==40);
+                    foreach (Lokal l in temp) { selektovaneProdavnice.Remove(l); }
                 }
                 else{
                     zaSelektovanje.GetComponent<Image>().color = Color.red;
-                    if (selektovaneProdavnice.Contains(toggle.name)) selektovaneProdavnice.Remove(toggle.name);
-                    else selektovaneProdavnice.Add(toggle.name);
+                    Lokal temp = DBconnection.lokali.Where(x => x.lokalID == Convert.ToInt32(toggle.name)).FirstOrDefault();
+                    if (selektovaneProdavnice.Contains(temp)) selektovaneProdavnice.Remove(temp);
+                    else selektovaneProdavnice.Add(temp);
                 }
             }
             else{
@@ -83,11 +82,11 @@ public class SelectionScript : MonoBehaviour
                 else{
                     if (toggle.GetComponent<Toggle>().isOn){
                         zaSelektovanje.GetComponent<Image>().color = Color.red;
-                        selektovaneProdavnice.Add(toggle.name);
+                        selektovaneProdavnice.Add(DBconnection.lokali.Where(x => x.lokalID == Convert.ToInt32(toggle.name)).FirstOrDefault());
                     }
                     else{
                         zaSelektovanje.GetComponent<Image>().color = new Color(243, 243, 243);
-                        selektovaneProdavnice.Remove(toggle.name);
+                        selektovaneProdavnice.Remove(DBconnection.lokali.Where(x => x.lokalID == Convert.ToInt32(toggle.name)).FirstOrDefault());
                     }
                 }
             }            
@@ -98,7 +97,8 @@ public class SelectionScript : MonoBehaviour
     {
         if(brProdavnice != ""){
             if (brProdavnice == "31 - 32"){
-                if(!selektovaneProdavnice.Contains("31") && !selektovaneProdavnice.Contains("32")){
+                if(!selektovaneProdavnice.Contains(DBconnection.lokali.Where(x=> x.lokalID==31).FirstOrDefault()) 
+                        && !selektovaneProdavnice.Contains(DBconnection.lokali.Where(x => x.lokalID == 31).FirstOrDefault())){
                     Content.transform.Find("31").gameObject.GetComponent<Toggle>().isOn = true;
                     Content.transform.Find("32").gameObject.GetComponent<Toggle>().isOn = true;
                 }
@@ -107,8 +107,11 @@ public class SelectionScript : MonoBehaviour
                     Content.transform.Find("32").gameObject.GetComponent<Toggle>().isOn = false;
                 }
             }
-            else if(brProdavnice == "38 - 40"){   
-                if(!selektovaneProdavnice.Contains("38") && !selektovaneProdavnice.Contains("39") && !selektovaneProdavnice.Contains("40")){
+            else if(brProdavnice == "38 - 40"){
+                if (!selektovaneProdavnice.Contains(DBconnection.lokali.Where(x => x.lokalID == 38).FirstOrDefault())
+                        && !selektovaneProdavnice.Contains(DBconnection.lokali.Where(x => x.lokalID == 39).FirstOrDefault())
+                        && !selektovaneProdavnice.Contains(DBconnection.lokali.Where(x => x.lokalID == 40).FirstOrDefault()))
+                {
                     Content.transform.Find("38").gameObject.GetComponent<Toggle>().isOn = true;
                     Content.transform.Find("39").gameObject.GetComponent<Toggle>().isOn = true;
                     Content.transform.Find("40").gameObject.GetComponent<Toggle>().isOn = true;
@@ -126,7 +129,7 @@ public class SelectionScript : MonoBehaviour
     public void ResetujSelekcije()
     {
         if(selektovaneProdavnice.Count > 0)
-            Content.transform.Find(selektovaneProdavnice[0]).GetComponent<Toggle>().isOn=false;
+            Content.transform.Find(selektovaneProdavnice[0].lokalID.ToString()).GetComponent<Toggle>().isOn=false;
         if (selektovaneProdavnice.Count > 0)
             ResetujSelekcije();
     }

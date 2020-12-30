@@ -12,6 +12,8 @@ public class MenadzerScena : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Alpha1))
             UcitajAplikaciju();
+        if (Input.GetKey(KeyCode.Space))
+            DBconnection.GetData();
     }
     public void UcitajAplikaciju()
     {

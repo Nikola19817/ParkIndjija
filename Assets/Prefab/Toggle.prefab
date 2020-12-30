@@ -163,7 +163,7 @@ GameObject:
   - component: {fileID: 7371302264132728776}
   - component: {fileID: 7371302264132728777}
   m_Layer: 5
-  m_Name: Label
+  m_Name: Naziv
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
