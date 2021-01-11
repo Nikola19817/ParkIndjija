@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using System.Data.Sql;
 using System.Data.SqlClient;
+using System;
 
 public static class DBconnection
 {
@@ -23,12 +22,12 @@ public static class DBconnection
         SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-RI6AJAR\SQLEXPRESS,1433;User ID=test;Password=test; Initial Catalog=ParkIndjija;");
         connection.Open();
         SqlCommand com = connection.CreateCommand();
-        
+
         com.CommandText = "Select * from Lokali";
         SqlDataReader rdr = com.ExecuteReader();
         while (rdr.Read())
         {
-            lokali.Add(new Lokal(rdr.GetInt32(0), rdr.GetString(1), rdr.GetString(2), rdr.GetString(3), rdr.GetString(4), rdr.GetString(5)));
+            lokali.Add(new Lokal(rdr.GetInt32(0), rdr.GetString(1), rdr.GetString(2), (byte[])rdr.GetValue(3), (byte[])rdr.GetValue(4), rdr.GetString(5)));
         }
         rdr.Close();
 
@@ -55,7 +54,7 @@ public static class DBconnection
         rdr = com.ExecuteReader();
         while (rdr.Read())
         {
-            reklame.Add(new Reklama(rdr.GetInt32(0), rdr.GetString(1), rdr.GetString(2), rdr.GetFloat(3), rdr.GetString(4)));
+            reklame.Add(new Reklama(rdr.GetInt32(0), rdr.GetString(1), (byte[])rdr.GetValue(2), Convert.ToSingle(rdr.GetValue(3)), rdr.GetString(4)));
         }
         rdr.Close();
 
@@ -68,9 +67,24 @@ public static class DBconnection
         }
         rdr.Close();
 
-
-
-
         connection.Close();
     }
+    public static Sprite ByteToSprite(byte[] data)
+    {
+        Texture2D texture = new Texture2D(100, 100);
+        texture.LoadImage(data);
+        Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2());
+        return sprite;
+    }
+
+    /*               KOD ZA UPLOAD SLIKE U BAZU 
+
+        byte[] imageData = File.ReadAllBytes(@"C:\Users\nikol\Desktop\baza\adidas.png");
+        com = connection.CreateCommand();
+        com.CommandText = "UPDATE Lokali SET lokalLogo= @Param";
+        SqlParameter param = com.Parameters.Add("@Param", SqlDbType.VarBinary, imageData.Length);
+        param.Value = imageData;
+        int test = com.ExecuteNonQuery();
+
+    */
 }
