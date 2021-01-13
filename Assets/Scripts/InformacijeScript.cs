@@ -19,8 +19,6 @@ public class InformacijeScript : MonoBehaviour
         prodavnicaPanel = this.transform.Find("Prodavnica").gameObject;
         selektovaneProdavnice = canvas.GetComponent<SelectionScript>().selektovaneProdavnice;
     }
-
-    // Update is called once per frame
     void Update()
     {
         selektovaneProdavnice = canvas.GetComponent<SelectionScript>().selektovaneProdavnice;
@@ -34,8 +32,11 @@ public class InformacijeScript : MonoBehaviour
                 GameObject toggle = content.transform.Find(imeObjekta.ToString()).gameObject;
                 this.transform.Find("Text").gameObject.GetComponent<TMP_Text>().text = selektovaneProdavnice[selektovaneProdavnice.Count - 1].lokalNaziv;
                 this.transform.Find("Prodavnica").Find("Opis").Find("Opis").gameObject.GetComponent<TMP_Text>().text = selektovaneProdavnice[selektovaneProdavnice.Count - 1].lokalOpis;
-                this.transform.Find("Prodavnica").Find("SlikaLevo").Find("Image").gameObject.GetComponent<Image>().sprite = DBconnection.ByteToSprite(selektovaneProdavnice[selektovaneProdavnice.Count - 1].lokalLogo);
-                this.transform.Find("Prodavnica").Find("SlikaDesno").Find("Image").gameObject.GetComponent<Image>().sprite = DBconnection.ByteToSprite(selektovaneProdavnice[selektovaneProdavnice.Count - 1].lokalSlika);
+
+
+                this.transform.Find("Prodavnica").Find("SlikaLevo").Find("Image").gameObject.GetComponent<RawImage>().texture = (Texture2D)DBconnection.ByteToTexture(File.ReadAllBytes(selektovaneProdavnice[selektovaneProdavnice.Count - 1].logoPath));
+                this.transform.Find("Prodavnica").Find("SlikaDesno").Find("Image").gameObject.GetComponent<RawImage>().texture = (Texture2D)DBconnection.ByteToTexture(File.ReadAllBytes(selektovaneProdavnice[selektovaneProdavnice.Count - 1].slikaPath));
+
 
                 string temp = selektovaneProdavnice[selektovaneProdavnice.Count - 1].lokalPopust;
                 temp = temp.Replace(@",", "\n");

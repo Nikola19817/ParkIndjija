@@ -4,33 +4,33 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public class JsonManager : MonoBehaviour
+public static class JsonManager
 {
 
-    AllDatabaseClasses localDatabase;
-    public string fileName = "TextDatabase.txt";
+    public static AllDatabaseClasses localDatabase;
+    public static string fileName = "TextDatabase.txt";
 
-
-    private void Awake()
-    {
-        DBconnection.OnEndDatabaseConnection += SaveJson;
-    }
-
-    public void SaveJson(AllDatabaseClasses allDatabase)
+    public static void SaveJson(AllDatabaseClasses allDatabase)
     {
 
         string json = JsonConvert.SerializeObject(allDatabase);
         WriteToFile(fileName, json);
 
     }
-
-    public void LoadJson()
+    public static void LoadJson()
     {
         string json = ReadFromFile(fileName);
         localDatabase = JsonConvert.DeserializeObject<AllDatabaseClasses>(json);
+        if (localDatabase.lokali.Count > 0)
+        {
+            DBconnection.lokali = localDatabase.lokali;
+            DBconnection.reklame = localDatabase.reklame;
+            DBconnection.brandovi = localDatabase.brandovi;
+            DBconnection.brand_lokal = localDatabase.brand_lokal;
+            DBconnection.users = localDatabase.users;
+        }
     }
-
-    private void WriteToFile(string fileName, string json)
+    private static void WriteToFile(string fileName, string json)
     {
         string path = GetFilePath(fileName);
         FileStream fileStream = new FileStream(path, FileMode.Create);
@@ -40,8 +40,7 @@ public class JsonManager : MonoBehaviour
             writer.Write(json);
         }
     }
-
-    private string ReadFromFile(string fileName)
+    private static string ReadFromFile(string fileName)
     {
         string path = GetFilePath(fileName);
         if (File.Exists(path))
@@ -58,8 +57,7 @@ public class JsonManager : MonoBehaviour
             return "";
         }
     }
-
-    private string GetFilePath(string fileName)
+    private static string GetFilePath(string fileName)
     {
         return Application.persistentDataPath + "/" + fileName;
     }
