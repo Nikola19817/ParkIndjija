@@ -24,7 +24,7 @@ public static class DBconnection
         reklame = new List<Reklama>();
         users = new List<User>();
 
-        using(SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-RI6AJAR\SQLEXPRESS,1433;User ID=test;Password=tes; Initial Catalog=ParkIndjija;"))
+        using(SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-RI6AJAR\SQLEXPRESS,1433;User ID=test;Password=test; Initial Catalog=ParkIndjija;"))
         {
             try
             {
