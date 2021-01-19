@@ -23,8 +23,8 @@ public static class DBconnection
         brand_lokal = new List<BrandLokal>();
         reklame = new List<Reklama>();
         users = new List<User>();
-
-        using(SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-RI6AJAR\SQLEXPRESS,1433;User ID=test;Password=test; Initial Catalog=ParkIndjija;"))
+        // using(SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-TRKR9Q\SQLEXPRESS,1433;User ID=MyLogin;Password=12345; Initial Catalog=ParkIndjija;"))
+        using (SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-RI6AJAR\SQLEXPRESS,1433;User ID=test;Password=test; Initial Catalog=ParkIndjija;"))
         {
             try
             {
@@ -106,9 +106,9 @@ public static class DBconnection
     }
     public static UnityEngine.Object ByteToVideo(byte[] data)
     {
-        File.WriteAllBytes(@"D:\Projects\Repositories\ParkIndjija\ParkIndjija\Assets\Resources\temp.mp4", data);
+        File.WriteAllBytes(Application.persistentDataPath + "temp.mp4", data);
         UnityEngine.Object temp = Resources.Load("temp.mp4");
-        File.Delete(@"D:\Projects\Repositories\ParkIndjija\ParkIndjija\Assets\Resources\temp.mp4");
+        File.Delete(Application.persistentDataPath + "temp.mp4");
         return temp;
     }
 
