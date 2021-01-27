@@ -12,9 +12,11 @@ public class ReklameScript : MonoBehaviour
     
     public float inactivityTime = 10f;
     public RenderTexture texture;
+    public RenderTexture textureTwo;
 
     Animator animator;
     VideoPlayer player;
+    VideoPlayer playerTwo;
     float timer=0f;
     int brojReklame=0;
     bool timerActive=true;
@@ -23,6 +25,7 @@ public class ReklameScript : MonoBehaviour
     private void Start()
     {
         player = this.transform.Find("VideoPlayer").gameObject.GetComponent<VideoPlayer>();
+        playerTwo = this.transform.Find("VideoPlayerTwo").gameObject.GetComponent<VideoPlayer>();
         player.playOnAwake = false;
         player.Stop();
         animator = this.GetComponent<Animator>();
@@ -68,6 +71,13 @@ public class ReklameScript : MonoBehaviour
             this.transform.Find("ReklamaSource").GetComponent<RawImage>().texture = texture;
             player.url = trenutnaReklama.reklamaPath;
             player.Play();
+            if (proslaRekalama.reklamaTip == "mp4")
+            {
+                playerTwo.url = proslaRekalama.reklamaPath;
+                this.transform.Find("ReklamaSourceSledeca").GetComponent<RawImage>().texture = textureTwo;
+                playerTwo.gameObject.SetActive(true);
+                playerTwo.Play();
+            }
         }
 
         AnimacijeReklama();
@@ -89,6 +99,8 @@ public class ReklameScript : MonoBehaviour
         {
             if (proslaRekalama.reklamaTip != "mp4")
                 this.transform.Find("ReklamaSourceSledeca").GetComponent<RawImage>().texture = (Texture2D)DBconnection.ByteToTexture(File.ReadAllBytes(proslaRekalama.reklamaPath));
+            else if(trenutnaReklama.reklamaTip =="mp4")
+                this.transform.Find("ReklamaSourceSledeca").GetComponent<RawImage>().texture = textureTwo;
             else
                 this.transform.Find("ReklamaSourceSledeca").GetComponent<RawImage>().texture = texture;
             animator.SetTrigger("SledecaReklama");
